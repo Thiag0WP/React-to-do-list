@@ -7,7 +7,7 @@ const TodoForm = ({ addTodo }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!value || !category) {
-      alert("Categoria não selecionada, por favor selecione uma :)");
+      alert("Categoria não selecionada, por favor selecione uma! :)");
       return;
     }
     addTodo(value, category);
