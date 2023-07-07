@@ -1,19 +1,36 @@
+import * as yup from 'yup';
 import { useState } from "react";
 
 const TodoForm = ({ addTodo }) => {
-  const [value, setValue] = useState("");
+  const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
 
-  const handleSubmit = (e) => {
+  const validationSchema = yup.object().shape({
+    title: yup.string().required("O titulo é obrigatório"),
+    category: yup.string().required("A categoria é obrigatória"),
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!value || !category) {
-      alert("Categoria não selecionada, por favor selecione uma! :)");
-      return;
+
+    try {
+      await validationSchema.validate({ title, category }, {abortEarly: false});
+      addTodo(title, category);
+      setTitle("");
+      setCategory("");
+    } catch (error) {
+      console.log(error.errors);
     }
-    addTodo(value, category);
-    setValue("");
-    setCategory("");
+
+    // if (!title || !category) {
+    //   alert("Categoria não selecionada, por favor selecione uma! :)");
+    //   return;
+    // }      //esse if era para verificar se a categoria estava selecionada antes de eu substituir pelo yup.
+    // addTodo(title, category);
+    // setTitle("");
+    // setCategory("");
   };
+
 
   return (
     <div>
@@ -22,8 +39,8 @@ const TodoForm = ({ addTodo }) => {
         <input
           type="text"
           placeholder="Digite o título"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
 
         <select
